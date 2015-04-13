@@ -47,6 +47,7 @@ public class FakeSensorManager extends SensorManager {
                         Constructor ctor =Class.forName("android.hardware.SensorEvent").getDeclaredConstructor(int.class);
                         ctor.setAccessible(true);
                         final SensorEvent event =(SensorEvent)(ctor.newInstance(values.length));
+                        event.sensor = info.mSensor;
                         for (int i=0;i<values.length;++i) {
                             event.values[i] = values[i];
                         }

@@ -17,6 +17,7 @@ public class IControlService extends Service {
     private ArrayList<IControlClient> mClients = new ArrayList<IControlClient>();
     private IControlServer.Stub mBinder = new IControlServer.Stub() {
             public void registerClient(IBinder client) {
+                Log.e("sunway","client registered");
                 mClients.add(IControlClient.Stub.asInterface(client));
             }
             public boolean isStarted() {
@@ -64,6 +65,7 @@ public class IControlService extends Service {
                             values[i] = Float.parseFloat(sp[i+1]);
                         }
                         dispatchSensorEvent(type, values);
+                        line = reader.readLine();
                     }
                 }
                 catch (Throwable e) {
@@ -76,7 +78,9 @@ public class IControlService extends Service {
     void dispatchSensorEvent (int type, float[] value) {
         for(IControlClient client: mClients) {
             try {
+                Log.e("sunway", "SensorEvent of type: "+type+"before dispatched");
                 client.onSensorChanged(type, value);
+                Log.e("sunway", "SensorEvent of type: "+type+"is dispatched");
             } catch (Throwable e) {
                 e.printStackTrace();
             }

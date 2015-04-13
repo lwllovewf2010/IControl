@@ -245,7 +245,7 @@ int main(int argc, char* const argv[])
         runtime.mClassName = className;
         runtime.mArgC = argc - i;
         runtime.mArgV = argv + i;
-        runtime.start("de.robv.android.xposed.XposedBridge",
+        runtime.start("com.android.internal.os.RuntimeInit",
                 application ? "application" : "tool");
     } else {
         fprintf(stderr, "Error: no class name or --zygote supplied.\n");

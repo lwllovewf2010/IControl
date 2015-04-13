@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.app.Activity;
 import android.os.Bundle;
 
-public class IControlConfigActivity extends Activity
+public class IControlActivity extends Activity
 {
     /** Called when the activity is first created. */
     @Override
