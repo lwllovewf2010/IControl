@@ -108,8 +108,8 @@ public final class XposedBridge {
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     String serviceName = (String)param.args[0];
                     Context ctx = (Context)param.thisObject;
-                    log("getSystemService for "+serviceName);
                     if (serviceName.equals("sensor")) {
+                        log("getSystemService for "+serviceName);
                         param.setResult(new FakeSensorManager((SensorManager)param.getResult(), ctx));
                     }
                 }
