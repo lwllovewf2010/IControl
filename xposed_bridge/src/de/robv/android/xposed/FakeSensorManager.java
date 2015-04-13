@@ -84,7 +84,7 @@ public class FakeSensorManager extends SensorManager {
         };  
 
     private void bindService() {
-        Intent intent = new Intent("com.sunway.icontrol.service");
+        Intent intent = new Intent("com.sunway.icontrol");
         mCtx.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
     
