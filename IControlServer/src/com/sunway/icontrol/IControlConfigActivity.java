@@ -3,7 +3,7 @@ package com.sunway.icontrol;
 import android.app.Activity;
 import android.os.Bundle;
 
-public class IControlServer extends Activity
+public class IControlConfigActivity extends Activity
 {
     /** Called when the activity is first created. */
     @Override
