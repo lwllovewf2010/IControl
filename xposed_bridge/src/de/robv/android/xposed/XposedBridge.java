@@ -8,6 +8,8 @@ import static de.robv.android.xposed.XposedHelpers.getObjectField;
 import static de.robv.android.xposed.XposedHelpers.setObjectField;
 import static de.robv.android.xposed.XposedHelpers.setStaticObjectField;
 
+import android.content.Context;
+import android.hardware.SensorManager;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -101,10 +103,14 @@ public final class XposedBridge {
         log("initXbridgeZygote");
         findAndHookMethod("android.app.ContextImpl", BOOTCLASSLOADER, "getSystemService", "java.lang.String", new XC_MethodHook() {
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                }
+                
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     String serviceName = (String)param.args[0];
+                    Context ctx = (Context)param.thisObject;
                     log("getSystemService for "+serviceName);
                     if (serviceName.equals("sensor")) {
-                        param.setResult(new FakeSensorManager());   
+                        param.setResult(new FakeSensorManager((SensorManager)param.getResult(), ctx));
                     }
                 }
             });

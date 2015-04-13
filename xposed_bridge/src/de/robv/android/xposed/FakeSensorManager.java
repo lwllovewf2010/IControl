@@ -1,5 +1,6 @@
 package de.robv.android.xposed;
 
+import android.content.Context;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import android.util.Log;
@@ -14,8 +15,12 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 
 public class FakeSensorManager extends SensorManager {
-    public FakeSensorManager() {
+    private SensorManager orig;
+    private Context ctx;
+    public FakeSensorManager(SensorManager orig, Context ctx) {
         Log.e("sunway", "FakeSensorManager inited");
+        this.orig = orig;
+        this.ctx = ctx;
     }
     public List<Sensor> getFullSensorList() {
         Log.e("sunway","getFullSensorList");
@@ -47,13 +52,14 @@ public class FakeSensorManager extends SensorManager {
     }
     
     public void unregisterListenerImpl(SensorEventListener listener, Sensor sensor) {
-        
+        orig.unregisterListener(listener, sensor);
     }
     
     public boolean registerListenerImpl(SensorEventListener listener, Sensor sensor,
                                         int delayUs, Handler handler, int maxBatchReportLatencyUs, int reservedFlags) {
         Log.e("sunway", "registerListener for "+sensor.toString());
-        return true;
+        return orig.registerListener(listener, sensor, delayUs, maxBatchReportLatencyUs, handler);
+        // return true;
     }
     
     public boolean flushImpl(SensorEventListener listener) {
