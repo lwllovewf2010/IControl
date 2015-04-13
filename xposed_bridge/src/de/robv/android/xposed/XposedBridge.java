@@ -1,6 +1,7 @@
 package de.robv.android.xposed;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
+import static de.robv.android.xposed.XposedHelpers.findAndHookConstructor;
 import static de.robv.android.xposed.XposedHelpers.getBooleanField;
 import static de.robv.android.xposed.XposedHelpers.getIntField;
 import static de.robv.android.xposed.XposedHelpers.getObjectField;
@@ -54,18 +55,11 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 import de.robv.android.xposed.callbacks.XCallback;
 
 public final class XposedBridge {
-    public static final String INSTALLER_PACKAGE_NAME = "de.robv.android.xposed.installer";
-    public static int XPOSED_BRIDGE_VERSION;
-
-    private static PrintWriter logWriter = null;
     private static boolean disableHooks = false;
 
     private static final Object[] EMPTY_ARRAY = new Object[0];
     public static final ClassLoader BOOTCLASSLOADER = ClassLoader.getSystemClassLoader();
-    @SuppressLint("SdCardPath")
-    public static final String BASE_DIR = "/data/data/" + INSTALLER_PACKAGE_NAME + "/";
 
-    // built-in handlers
     private static final Map<Member, CopyOnWriteSortedSet<XC_MethodHook>> sHookedMethodCallbacks = new HashMap<Member, CopyOnWriteSortedSet<XC_MethodHook>>();
     private static final CopyOnWriteSortedSet<XC_LoadPackage> sLoadedPackageCallbacks = new CopyOnWriteSortedSet<XC_LoadPackage>();
 
@@ -77,9 +71,6 @@ public final class XposedBridge {
         String startClassName = getStartClassName();
 
         try {
-            if (startClassName == null) {
-                log("Running ROM '" + Build.DISPLAY + "' with fingerprint '" + Build.FINGERPRINT + "'");
-            }
             if (initNative()) {
                 if (startClassName == null) {
                     initXbridgeZygote();
@@ -112,16 +103,19 @@ public final class XposedBridge {
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     String serviceName = (String)param.args[0];
                     log("getSystemService for "+serviceName);
+                    if (serviceName.equals("sensor")) {
+                        param.setResult(new FakeSensorManager());   
+                    }
                 }
             });
     }
 
     public synchronized static void log(String text) {
-        Log.e("Xposed", text);
+        Log.e("sunway", text);
     }
 
     public synchronized static void log(Throwable t) {
-        Log.e("Xposed", Log.getStackTraceString(t));
+        Log.e("sunway", Log.getStackTraceString(t));
     }
 
     /**
