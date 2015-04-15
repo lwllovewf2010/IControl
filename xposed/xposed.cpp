@@ -32,9 +32,9 @@ size_t arrayContentsOffset = 0;
 
 bool addXposedToClasspath(bool zygote) {
     if (access("/system/framework/xposed_bridge.jar", R_OK) == 0) {
-        char* oldClassPath = getenv("CLASSPATH");
+        char* oldClassPath = getenv("BOOTCLASSPATH");
         if (oldClassPath == NULL) {
-            setenv("CLASSPATH", "/system/framework/xposed_bridge.jar", 1);
+            setenv("BOOTCLASSPATH", "/system/framework/xposed_bridge.jar", 1);
         } else {
             char classPath[4096];
             int neededLength = snprintf(classPath, sizeof(classPath), "%s:%s", "/system/framework/xposed_bridge.jar", oldClassPath);
@@ -42,7 +42,7 @@ bool addXposedToClasspath(bool zygote) {
                 ALOGE("ERROR: CLASSPATH would exceed %d characters", sizeof(classPath));
                 return false;
             }
-            setenv("CLASSPATH", classPath, 1);
+            setenv("BOOTCLASSPATH", classPath, 1);
         }
         return true;
     } else {
